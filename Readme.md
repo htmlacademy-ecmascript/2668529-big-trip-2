@@ -1,7 +1,7 @@
 # Проект «Большое путешествие»
 
 * Студент: [Konstantin Chaykin](https://up.htmlacademy.ru/ecmascript-individual/2/user/2668529).
-* Наставник: `Неизвестно`.
+* Наставник: `Олег Глущенко`.
 
 ---
 
