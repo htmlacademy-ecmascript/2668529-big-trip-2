@@ -18,16 +18,15 @@ export default class TripPresenter {
     render(new FilterView(), this.filtersContainer, RenderPosition.BEFOREEND);
     render(new SortView(), this.tripEventsContainer, RenderPosition.AFTERBEGIN);
 
+    this.eventList = new PointListView();
+    render(this.eventList, this.tripEventsContainer);
 
     render(new NewFormView({
       point: this.tripPoints[0],
       offers: this.pointsModel.getOffersByType(this.tripPoints[0].type),
       checkedOffers: this.pointsModel.getOfferById(this.tripPoints[0].type, this.tripPoints[0].offers),
       destination: this.pointsModel.getDestinationById(this.tripPoints[0].destination)
-    }), this.tripEventsContainer);
-
-    this.eventList = new PointListView();
-    render(this.eventList, this.tripEventsContainer);
+    }), this.eventList.getElement(), RenderPosition.AFTERBEGIN);
 
     for (let i = 0; i < this.tripPoints.length; i++) {
       const point = this.tripPoints[i];
