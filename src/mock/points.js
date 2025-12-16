@@ -52,6 +52,16 @@ const mockPoints = [
     isFavorite: true,
     offers: ['of-sightseeing-1'],
     type: 'sightseeing'
+  },
+  {
+    id: 'point-6',
+    basePrice: 900,
+    dateFrom: '2019-11-01T10:00:00.000Z',
+    dateTo: '2019-11-01T12:00:00.000Z',
+    destination: null,
+    isFavorite: false,
+    offers: [],
+    type: 'bus'
   }
 ];
 

@@ -24,7 +24,7 @@ export default class TripPresenter {
     render(new NewFormView({
       point: this.tripPoints[0],
       offers: this.pointsModel.getOffersByType(this.tripPoints[0].type),
-      checkedOffers: this.pointsModel.getOfferById(this.tripPoints[0].type, this.tripPoints[0].offers),
+      checkedOffers: this.tripPoints[0].offers,
       destination: this.pointsModel.getDestinationById(this.tripPoints[0].destination)
     }), this.eventList.getElement(), RenderPosition.AFTERBEGIN);
 
