@@ -1,13 +1,12 @@
 import { render, RenderPosition } from '../render.js';
-import FilterView from '../view/filter-view.js';
-import SortView from '../view/sort-view.js';
+import SortView from '../view/sort-view';
 import PointListView from '../view/point-list-view.js';
 import PointView from '../view/point-view.js';
 import FormView from '../view/form-view.js';
+import { BLANK_POINT } from '../const.js';
 
 export default class TripPresenter {
-  constructor({ filtersContainer, tripEventsContainer, pointsModel }) {
-    this.filtersContainer = filtersContainer;
+  constructor({ tripEventsContainer, pointsModel }) {
     this.tripEventsContainer = tripEventsContainer;
     this.pointsModel = pointsModel;
 
@@ -18,7 +17,6 @@ export default class TripPresenter {
   init() {
     this.tripPoints = [...this.pointsModel.getPoints()];
 
-    render(new FilterView(), this.filtersContainer, RenderPosition.BEFOREEND);
     render(new SortView(), this.tripEventsContainer, RenderPosition.AFTERBEGIN);
 
     this.eventList = new PointListView();
@@ -30,21 +28,12 @@ export default class TripPresenter {
   }
 
   renderNewPointForm() {
-    const blankPoint = {
-      id: null,
-      type: 'taxi',
-      dateFrom: '2019-03-18T10:30',
-      dateTo: '2019-03-18T11:00',
-      basePrice: '',
-      offers: [],
-      destination: null,
-    };
 
-    const offers = this.pointsModel.getOffersByType(blankPoint.type);
+    const offers = this.pointsModel.getOffersByType(BLANK_POINT.type);
     const destination = null;
 
     const form = new FormView({
-      point: blankPoint,
+      point: BLANK_POINT,
       offers,
       selectedOffers: [],
       destination,
