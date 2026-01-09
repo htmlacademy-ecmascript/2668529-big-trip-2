@@ -1,4 +1,4 @@
-import { render, RenderPosition } from '../render.js';
+import { render, RenderPosition } from '../framework/render.js';
 import SortView from '../view/sort-view';
 import PointListView from '../view/point-list-view.js';
 import PointView from '../view/point-view.js';
@@ -40,7 +40,7 @@ export default class TripPresenter {
       isNew: true,
     });
 
-    render(form, this.eventList.getElement(), RenderPosition.AFTERBEGIN);
+    render(form, this.eventList.element, RenderPosition.AFTERBEGIN);
   }
 
   renderEditForm(point) {
@@ -55,7 +55,7 @@ export default class TripPresenter {
       isNew: false,
     });
 
-    render(form, this.eventList.getElement(), RenderPosition.BEFOREEND);
+    render(form, this.eventList.element, RenderPosition.BEFOREEND);
   }
 
   renderPoint(point) {
@@ -66,6 +66,6 @@ export default class TripPresenter {
 
     const pointView = new PointView({ point, offers, destination });
 
-    render(pointView, this.eventList.getElement(), RenderPosition.BEFOREEND);
+    render(pointView, this.eventList.element, RenderPosition.BEFOREEND);
   }
 }
