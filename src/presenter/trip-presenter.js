@@ -29,34 +29,20 @@ export default class TripPresenter {
   #renderNewPointForm() {
     const offers = this.#pointsModel.getOffersByType(BLANK_POINT.type);
     const destination = null;
-    const form = new FormView({
-      point: BLANK_POINT,
-      offers,
-      selectedOffers: [],
-      destination,
-      isNew: true,
-    });
+    const form = new FormView({point: BLANK_POINT, offers, selectedOffers: [], destination, isNew: true});
     render(form, this.#eventList.element, RenderPosition.AFTERBEGIN);
   }
 
   #renderEditForm(point) {
     const offers = this.#pointsModel.getOffersByType(point.type);
     const destination = this.#pointsModel.getDestinationById(point.destination);
-    const form = new FormView({
-      point,
-      offers,
-      selectedOffers: point.offers,
-      destination,
-      isNew: false,
-    });
+    const form = new FormView({point, offers, selectedOffers: point.offers, destination, isNew: false});
     render(form, this.#eventList.element, RenderPosition.BEFOREEND);
   }
 
   #renderPoint(point) {
     const destination = this.#pointsModel.getDestinationById(point.destination);
-    const offers = this.#pointsModel
-      .getOffersByType(point.type)
-      .filter((offer) => point.offers.includes(offer.id));
+    const offers = this.#pointsModel.getOffersByType(point.type).filter((offer) => point.offers.includes(offer.id));
     const pointView = new PointView({ point, offers, destination });
     render(pointView, this.#eventList.element, RenderPosition.BEFOREEND);
   }
