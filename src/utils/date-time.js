@@ -4,10 +4,6 @@ const DATE_FORMAT = 'MMM DD';
 const TIME_FORMAT = 'HH:mm';
 const DATE_TIME_FORMAT = 'DD/MM/YY HH:mm';
 
-function getRandomArrayElement(items) {
-  return items[Math.floor(Math.random() * items.length)];
-}
-
 function humanizePointDate(date) {
   return date ? dayjs(date).format(DATE_FORMAT) : '';
 }
@@ -41,4 +37,16 @@ function getEventDuration(dateFrom, dateTo) {
   return durationParts.join(' ');
 }
 
-export {getRandomArrayElement, humanizePointDate, humanizePointTime, humanizeDateTime, getEventDuration};
+const isFuture = (point) => dayjs(point.dateFrom).isAfter(dayjs());
+
+const isPast = (point) => dayjs(point.dateTo).isBefore(dayjs());
+
+const isPresent = (point) => {
+  const now = dayjs();
+  const start = dayjs(point.dateFrom);
+  const end = dayjs(point.dateTo);
+
+  return (start.isBefore(now) || start.isSame(now)) && (end.isAfter(now) || end.isSame(now));
+};
+
+export { humanizePointDate, humanizePointTime, humanizeDateTime, getEventDuration , isFuture, isPast, isPresent};
