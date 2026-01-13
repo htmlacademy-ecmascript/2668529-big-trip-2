@@ -1,82 +1,88 @@
-import { render, RenderPosition } from '../render.js';
-import FilterView from '../view/filter-view.js';
-import SortView from '../view/sort-view.js';
+import { render, RenderPosition, replace } from '../framework/render.js';
+import SortView from '../view/sort-view';
 import PointListView from '../view/point-list-view.js';
 import PointView from '../view/point-view.js';
 import FormView from '../view/form-view.js';
 
 export default class TripPresenter {
-  constructor({ filtersContainer, tripEventsContainer, pointsModel }) {
-    this.filtersContainer = filtersContainer;
-    this.tripEventsContainer = tripEventsContainer;
-    this.pointsModel = pointsModel;
+  #tripEventsContainer = null;
+  #pointsModel = null;
+  #tripPoints = [];
+  #eventList = null;
+  #openedPointView = null;
+  #openedFormView = null;
 
-    this.tripPoints = [];
-    this.eventList = null;
+  constructor({ tripEventsContainer, pointsModel }) {
+    this.#tripEventsContainer = tripEventsContainer;
+    this.#pointsModel = pointsModel;
   }
 
   init() {
-    this.tripPoints = [...this.pointsModel.getPoints()];
-
-    render(new FilterView(), this.filtersContainer, RenderPosition.BEFOREEND);
-    render(new SortView(), this.tripEventsContainer, RenderPosition.AFTERBEGIN);
-
-    this.eventList = new PointListView();
-    render(this.eventList, this.tripEventsContainer);
-
-    this.renderNewPointForm();
-    this.renderEditForm(this.tripPoints[0]);
-    this.tripPoints.forEach((point) => this.renderPoint(point));
+    this.#tripPoints = [...this.#pointsModel.points];
+    render(new SortView(), this.#tripEventsContainer, RenderPosition.AFTERBEGIN);
+    this.#eventList = new PointListView();
+    render(this.#eventList, this.#tripEventsContainer);
+    this.#tripPoints.forEach((point) => this.#renderPoint(point));
+    document.addEventListener('keydown', this.#handleFormEscKeyDown);
   }
 
-  renderNewPointForm() {
-    const blankPoint = {
-      id: null,
-      type: 'taxi',
-      dateFrom: '2019-03-18T10:30',
-      dateTo: '2019-03-18T11:00',
-      basePrice: '',
-      offers: [],
-      destination: null,
-    };
+  #renderPoint(point) {
+    const destination = this.#pointsModel.getDestinationById(point.destination);
+    const offers = this.#pointsModel.getOffersByType(point.type).filter((offer) => point.offers.includes(offer.id));
+    const formOffers = this.#pointsModel.getOffersByType(point.type);
 
-    const offers = this.pointsModel.getOffersByType(blankPoint.type);
-    const destination = null;
+    let pointView = null;
+    let formView = null;
 
-    const form = new FormView({
-      point: blankPoint,
-      offers,
-      selectedOffers: [],
-      destination,
-      isNew: true,
-    });
-
-    render(form, this.eventList.getElement(), RenderPosition.AFTERBEGIN);
-  }
-
-  renderEditForm(point) {
-    const offers = this.pointsModel.getOffersByType(point.type);
-    const destination = this.pointsModel.getDestinationById(point.destination);
-
-    const form = new FormView({
+    pointView = new PointView({
       point,
       offers,
+      destination,
+      onEditClick: () => {
+        this.#replacePointToForm(pointView, formView);
+      }
+    });
+
+    formView = new FormView({
+      point,
+      offers: formOffers,
       selectedOffers: point.offers,
       destination,
       isNew: false,
+      onSubmit: () => {
+        this.#replaceFormToPoint(formView, pointView);
+      },
+      onRollupClick: () => {
+        this.#replaceFormToPoint(formView, pointView);
+      }
     });
 
-    render(form, this.eventList.getElement(), RenderPosition.BEFOREEND);
+    render(pointView, this.#eventList.element, RenderPosition.BEFOREEND);
   }
 
-  renderPoint(point) {
-    const destination = this.pointsModel.getDestinationById(point.destination);
-    const offers = this.pointsModel
-      .getOffersByType(point.type)
-      .filter((offer) => point.offers.includes(offer.id));
+  #replacePointToForm(pointView, formView) {
+    if (this.#openedFormView && this.#openedFormView !== formView && this.#openedPointView) {
+      replace(this.#openedPointView, this.#openedFormView);
+    }
 
-    const pointView = new PointView({ point, offers, destination });
-
-    render(pointView, this.eventList.getElement(), RenderPosition.BEFOREEND);
+    replace(formView, pointView);
+    this.#openedFormView = formView;
+    this.#openedPointView = pointView;
   }
+
+  #replaceFormToPoint(formView, pointView) {
+    if (this.#openedFormView === formView) {
+      replace(pointView, formView);
+      this.#openedFormView = null;
+      this.#openedPointView = null;
+    }
+  }
+
+  #handleFormEscKeyDown = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      if (this.#openedFormView && this.#openedPointView) {
+        this.#replaceFormToPoint(this.#openedFormView, this.#openedPointView);
+      }
+    }
+  };
 }

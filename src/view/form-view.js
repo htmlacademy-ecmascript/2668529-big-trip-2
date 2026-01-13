@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { humanizeDateTime } from '../utils.js';
 import { POINTS_TYPE } from '../const.js';
 
@@ -87,8 +87,7 @@ const createDestinationTemplate = (destination) => {
 
 
 function createFormTemplate(point, offers, selectedOffers, destination, isNew) {
-  const { id = null, type, dateFrom, dateTo, basePrice } = point;
-  const safeId = id ?? 'new';
+  const { id , type, dateFrom, dateTo, basePrice } = point;
   const destName = destination?.name ?? '';
 
   return `
@@ -97,52 +96,52 @@ function createFormTemplate(point, offers, selectedOffers, destination, isNew) {
         <header class="event__header">
 
           <div class="event__type-wrapper">
-            <label class="event__type event__type-btn" for="event-type-toggle-${safeId}">
+            <label class="event__type event__type-btn" for="event-type-toggle-${id}">
               <span class="visually-hidden">Choose event type</span>
               <img class="event__type-icon" width="17" height="17"
                 src="img/icons/${type}.png" alt="Event type icon">
             </label>
-            <input class="event__type-toggle visually-hidden" id="event-type-toggle-${safeId}" type="checkbox">
+            <input class="event__type-toggle visually-hidden" id="event-type-toggle-${id}" type="checkbox">
 
             <div class="event__type-list">
               <fieldset class="event__type-group">
                 <legend class="visually-hidden">Event type</legend>
-                ${POINTS_TYPE.map((t) => createTypeTemplate(t, type, safeId)).join('')}
+                ${POINTS_TYPE.map((t) => createTypeTemplate(t, type, id)).join('')}
               </fieldset>
             </div>
           </div>
 
           <div class="event__field-group event__field-group--destination">
-            <label class="event__label event__type-output" for="event-destination-${safeId}">
+            <label class="event__label event__type-output" for="event-destination-${id}">
               ${type}
             </label>
             <input class="event__input event__input--destination"
-              id="event-destination-${safeId}"
+              id="event-destination-${id}"
               type="text" name="event-destination"
               value="${destName}">
           </div>
 
           <div class="event__field-group event__field-group--time">
-            <label class="visually-hidden" for="event-start-time-${safeId}">From</label>
+            <label class="visually-hidden" for="event-start-time-${id}">From</label>
             <input class="event__input event__input--time"
-              id="event-start-time-${safeId}"
+              id="event-start-time-${id}"
               type="text" name="event-start-time"
               value="${humanizeDateTime(dateFrom)}">
             —
-            <label class="visually-hidden" for="event-end-time-${safeId}">To</label>
+            <label class="visually-hidden" for="event-end-time-${id}">To</label>
             <input class="event__input event__input--time"
-              id="event-end-time-${safeId}"
+              id="event-end-time-${id}"
               type="text" name="event-end-time"
               value="${humanizeDateTime(dateTo)}">
           </div>
 
           <div class="event__field-group event__field-group--price">
-            <label class="event__label" for="event-price-${safeId}">
+            <label class="event__label" for="event-price-${id}">
               <span class="visually-hidden">Price</span>
               €
             </label>
             <input class="event__input event__input--price"
-              id="event-price-${safeId}"
+              id="event-price-${id}"
               type="text" name="event-price"
               value="${basePrice}">
           </div>
@@ -166,16 +165,23 @@ function createFormTemplate(point, offers, selectedOffers, destination, isNew) {
   `;
 }
 
-export default class FormView {
-  constructor({ point, offers, selectedOffers, destination, isNew }) {
+export default class FormView extends AbstractView {
+  #onSubmit = null;
+  #onRollupClick = null;
+
+  constructor({ point, offers, selectedOffers, destination, isNew, onSubmit, onRollupClick }) {
+    super();
     this.point = point;
     this.offers = offers;
     this.selectedOffers = selectedOffers;
     this.destination = destination;
     this.isNew = isNew;
+    this.#onSubmit = onSubmit;
+    this.#onRollupClick = onRollupClick;
+    this.#bindHandlers();
   }
 
-  getTemplate() {
+  get template() {
     return createFormTemplate(
       this.point,
       this.offers,
@@ -185,14 +191,28 @@ export default class FormView {
     );
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-    return this.element;
+  get formElement() {
+    return this.element.querySelector('form');
   }
 
-  removeElement() {
-    this.element = null;
+  get rollupButton() {
+    return this.element.querySelector('.event__rollup-btn');
   }
+
+  #bindHandlers() {
+    this.formElement?.addEventListener('submit', this.#submitHandler);
+    if (!this.isNew) {
+      this.rollupButton?.addEventListener('click', this.#rollupClickHandler);
+    }
+  }
+
+  #submitHandler = (evt) => {
+    evt.preventDefault();
+    this.#onSubmit?.();
+  };
+
+  #rollupClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#onRollupClick?.();
+  };
 }
