@@ -10,4 +10,11 @@ const BLANK_POINT = {
   destination: null,
 };
 
-export { POINTS_TYPE, BLANK_POINT };
+const FilterType = {
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PRESENT: 'present',
+  PAST: 'past',
+};
+
+export { POINTS_TYPE, BLANK_POINT, FilterType };
