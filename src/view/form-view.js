@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { humanizeDateTime } from '../utils.js';
+import { humanizeDateTime } from '../utils/point-data.js';
 import { POINTS_TYPE } from '../const.js';
 
 const createTypeTemplate = (type, currentType, id) => {
