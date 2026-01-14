@@ -12,8 +12,6 @@ export default class TripPresenter {
   #eventList = new PointListView();
   #emptyListView = new EmptyListView();
   #sortComponent = new SortView();
-  #openedPointView = null;
-  #openedFormView = null;
 
   constructor({ tripEventsContainer, pointsModel }) {
     this.#tripEventsContainer = tripEventsContainer;
@@ -23,7 +21,6 @@ export default class TripPresenter {
   init() {
     this.#tripPoints = [...this.#pointsModel.points];
     this.#renderApp();
-    document.addEventListener('keydown', this.#handleFormEscKeyDown);
   }
 
   #renderSort() {
@@ -43,33 +40,40 @@ export default class TripPresenter {
     const offers = this.#pointsModel.getOffersByType(point.type).filter((offer) => point.offers.includes(offer.id));
     const formOffers = this.#pointsModel.getOffersByType(point.type);
 
-    let pointView = null;
-    let formView = null;
-
-    pointView = new PointView({
+    const pointView = new PointView({
       point,
       offers,
       destination,
-      onEditClick: () => {
-        this.#replacePointToForm(pointView, formView);
-      }
+      onEditClick: () => replacePointToForm()
     });
 
-    formView = new FormView({
+    const formView = new FormView({
       point,
       offers: formOffers,
       selectedOffers: point.offers,
       destination,
       isNew: false,
-      onSubmit: () => {
-        this.#replaceFormToPoint(formView, pointView);
-      },
-      onRollupClick: () => {
-        this.#replaceFormToPoint(formView, pointView);
-      }
+      onSubmit: () => replaceFormToPoint(),
+      onRollupClick: () => replaceFormToPoint()
     });
 
     render(pointView, this.#eventList.element, RenderPosition.BEFOREEND);
+
+    const handleFormEscKeyDown = (evt) => {
+      if (evt.key === 'Escape') {
+        replaceFormToPoint();
+      }
+    };
+
+    function replacePointToForm() {
+      replace(formView, pointView);
+      document.addEventListener('keydown', handleFormEscKeyDown);
+    }
+
+    function replaceFormToPoint() {
+      replace(pointView, formView);
+      document.removeEventListener('keydown', handleFormEscKeyDown);
+    }
   }
 
   #renderApp() {
@@ -81,30 +85,4 @@ export default class TripPresenter {
     this.#renderEventList();
     this.#tripPoints.forEach((point) => this.#renderPoint(point));
   }
-
-  #replacePointToForm(pointView, formView) {
-    if (this.#openedFormView && this.#openedFormView !== formView && this.#openedPointView) {
-      replace(this.#openedPointView, this.#openedFormView);
-    }
-
-    replace(formView, pointView);
-    this.#openedFormView = formView;
-    this.#openedPointView = pointView;
-  }
-
-  #replaceFormToPoint(formView, pointView) {
-    if (this.#openedFormView === formView) {
-      replace(pointView, formView);
-      this.#openedFormView = null;
-      this.#openedPointView = null;
-    }
-  }
-
-  #handleFormEscKeyDown = (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
-      if (this.#openedFormView && this.#openedPointView) {
-        this.#replaceFormToPoint(this.#openedFormView, this.#openedPointView);
-      }
-    }
-  };
 }
