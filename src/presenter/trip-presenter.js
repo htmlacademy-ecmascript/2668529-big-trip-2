@@ -3,6 +3,7 @@ import SortView from '../view/sort-view.js';
 import PointListView from '../view/point-list-view.js';
 import EmptyListView from '../view/empty-list-view.js';
 import PointPresenter from '../presenter/point-presenter.js';
+import { updateItem } from '../utils/common.js';
 
 export default class TripPresenter {
   #tripEventsContainer = null;
@@ -58,4 +59,10 @@ export default class TripPresenter {
     this.#allPointPresenters.forEach((presenter) => presenter.destroy());
     this.#allPointPresenters.clear();
   }
+
+  #handlePointChange = (updatedPoint) => {
+    this.#tripPoints = updateItem(this.#tripPoints, updatedPoint);
+    this.#allPointPresenters.get(updatedPoint.id).init(updatedPoint);
+  };
+
 }
