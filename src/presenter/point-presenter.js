@@ -1,4 +1,4 @@
-import { render, replace, RenderPosition } from '../framework/render.js';
+import { render, replace, RenderPosition, remove } from '../framework/render.js';
 import PointView from '../view/point-view.js';
 import FormView from '../view/form-view.js';
 
@@ -24,6 +24,8 @@ export default class PointPresenter {
     const destination = this.#pointsModel.getDestinationById(point.destination);
     const offers = this.#pointsModel.getOffersByType(point.type).filter((offer) => point.offers.includes(offer.id));
     const formOffers = this.#pointsModel.getOffersByType(point.type);
+    const prevPointView = this.#pointView;
+    const prevFormView = this.#formView;
 
     this.#pointView = new PointView({
       point,
@@ -42,7 +44,26 @@ export default class PointPresenter {
       onRollupClick: () => this.#replaceFormToPoint()
     });
 
-    render(this.#pointView, this.#eventList.element, RenderPosition.BEFOREEND);
+    if (!prevPointView && !prevFormView) {
+      render(this.#pointView, this.#eventList.element, RenderPosition.BEFOREEND);
+      return;
+    }
+
+    if (this.#eventList.contains(prevPointView.element)) {
+      replace(this.#pointView, prevPointView);
+    }
+
+    if (this.#eventList.contains(prevFormView.element)) {
+      replace(this.#formView, prevFormView);
+    }
+
+    remove(prevPointView);
+    remove(prevFormView);
+  }
+
+  destroy() {
+    remove(this.#pointView);
+    remove(this.#formView);
   }
 
   #replacePointToForm() {
