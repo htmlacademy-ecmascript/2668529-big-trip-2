@@ -63,6 +63,7 @@ export default class TripPresenter {
       this.#renderEmptyList();
       return;
     }
+    this.#sortPoints(this.#currentSortType);
     this.#renderSort();
     this.#renderEventList();
     this.#renderPoints();
