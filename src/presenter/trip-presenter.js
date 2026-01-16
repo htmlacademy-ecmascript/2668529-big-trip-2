@@ -10,7 +10,7 @@ export default class TripPresenter {
   #pointsModel = null;
   #tripPoints = [];
   #eventList = new PointListView();
-  #emptyListView = new EmptyListView();
+  #emptyList = new EmptyListView();
   #sortComponent = new SortView();
   #allPointPresenters = new Map();
 
@@ -29,17 +29,23 @@ export default class TripPresenter {
   }
 
   #renderEmptyList() {
-    render(this.#emptyListView, this.#tripEventsContainer);
+    render(this.#emptyList, this.#tripEventsContainer);
   }
 
   #renderEventList() {
     render(this.#eventList, this.#tripEventsContainer);
   }
 
+  #renderPoints() {
+    this.#tripPoints.forEach((point) => this.#renderPoint(point));
+  }
+
   #renderPoint(point) {
     const pointPresenter = new PointPresenter({
       eventList: this.#eventList,
-      pointsModel: this.#pointsModel
+      pointsModel: this.#pointsModel,
+      onDataChange: this.#handlePointChange,
+      onModeChange: this.#handleModeChange
     });
     pointPresenter.init(point);
     this.#allPointPresenters.set(point.id, pointPresenter);
@@ -52,7 +58,7 @@ export default class TripPresenter {
     }
     this.#renderSort();
     this.#renderEventList();
-    this.#tripPoints.forEach((point) => this.#renderPoint(point));
+    this.#renderPoints();
   }
 
   #clearEventList() {
@@ -65,4 +71,7 @@ export default class TripPresenter {
     this.#allPointPresenters.get(updatedPoint.id).init(updatedPoint);
   };
 
+  #handleModeChange = () => {
+    this.#allPointPresenters.forEach((presenter) => presenter.resetView());
+  };
 }

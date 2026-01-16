@@ -178,7 +178,7 @@ export default class FormView extends AbstractView {
     this.isNew = isNew;
     this.#onSubmit = onSubmit;
     this.#onRollupClick = onRollupClick;
-    this.#bindHandlers();
+    this.#setHandlers();
   }
 
   get template() {
@@ -199,20 +199,20 @@ export default class FormView extends AbstractView {
     return this.element.querySelector('.event__rollup-btn');
   }
 
-  #bindHandlers() {
-    this.formElement?.addEventListener('submit', this.#submitHandler);
+  #setHandlers() {
+    this.formElement.addEventListener('submit', this.#formSubmitHandler);
     if (!this.isNew) {
-      this.rollupButton?.addEventListener('click', this.#rollupClickHandler);
+      this.rollupButton.addEventListener('click', this.#rollupClickHandler);
     }
   }
 
-  #submitHandler = (evt) => {
+  #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#onSubmit?.();
+    this.#onSubmit(this.point);
   };
 
   #rollupClickHandler = (evt) => {
     evt.preventDefault();
-    this.#onRollupClick?.();
+    this.#onRollupClick();
   };
 }
