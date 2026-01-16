@@ -1,4 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
+import { SortType } from '../const.js';
 
 function createSortTemplate(currentSortType) {
   return (
@@ -6,7 +7,7 @@ function createSortTemplate(currentSortType) {
             <div class="trip-sort__item  trip-sort__item--day">
               <input id="sort-day" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-day"
               ${currentSortType === 'day' ? 'checked' : ''}>
-              <label class="trip-sort__btn" for="sort-day">Day</label>
+              <label class="trip-sort__btn" for="sort-day" data-sort-type="${SortType.DAY}">Day</label>
             </div>
 
             <div class="trip-sort__item  trip-sort__item--event">
@@ -17,13 +18,13 @@ function createSortTemplate(currentSortType) {
             <div class="trip-sort__item  trip-sort__item--time">
               <input id="sort-time" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-time"
               ${currentSortType === 'time' ? 'checked' : ''}>
-              <label class="trip-sort__btn" for="sort-time">Time</label>
+              <label class="trip-sort__btn" for="sort-time" data-sort-type="${SortType.TIME}">Time</label>
             </div>
 
             <div class="trip-sort__item  trip-sort__item--price">
               <input id="sort-price" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-price"
               ${currentSortType === 'price' ? 'checked' : ''}>
-              <label class="trip-sort__btn" for="sort-price">Price</label>
+              <label class="trip-sort__btn" for="sort-price" data-sort-type="${SortType.PRICE}">Price</label>
             </div>
 
             <div class="trip-sort__item  trip-sort__item--offer">
