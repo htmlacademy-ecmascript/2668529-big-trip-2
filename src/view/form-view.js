@@ -169,16 +169,19 @@ export default class FormView extends AbstractView {
   #onSubmit = null;
   #onRollupClick = null;
 
-  constructor({ point, offers, selectedOffers, destination, isNew, onSubmit, onRollupClick }) {
+  constructor({ point, offers, selectedOffers, destination, onSubmit, onRollupClick }) {
     super();
     this.point = point;
     this.offers = offers;
     this.selectedOffers = selectedOffers;
     this.destination = destination;
-    this.isNew = isNew;
     this.#onSubmit = onSubmit;
     this.#onRollupClick = onRollupClick;
     this.#setHandlers();
+  }
+
+  get isNew() {
+    return this.point.id === null;
   }
 
   get template() {
