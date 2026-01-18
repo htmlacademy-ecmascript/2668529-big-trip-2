@@ -46,7 +46,6 @@ export default class PointPresenter {
       offers: formOffers,
       selectedOffers: point.offers,
       destination,
-      isNew: false,
       onSubmit: this.#handleFormSubmit,
       onRollupClick: this.#handleRollupClick
     });
@@ -69,7 +68,6 @@ export default class PointPresenter {
   destroy() {
     remove(this.#pointView);
     remove(this.#formView);
-    //document.removeEventListener('keydown', this.#handleFormEscKeyDown);
   }
 
   resetView() {

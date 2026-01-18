@@ -17,4 +17,10 @@ const FilterType = {
   PAST: 'past',
 };
 
-export { POINTS_TYPE, BLANK_POINT, FilterType };
+const SortType = {
+  DAY: 'day',
+  TIME: 'time',
+  PRICE: 'price'
+};
+
+export { POINTS_TYPE, BLANK_POINT, FilterType, SortType };

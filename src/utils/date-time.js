@@ -49,4 +49,17 @@ const isPresent = (point) => {
   return (start.isBefore(now) || start.isSame(now)) && (end.isAfter(now) || end.isSame(now));
 };
 
-export { humanizePointDate, humanizePointTime, humanizeDateTime, getEventDuration , isFuture, isPast, isPresent};
+const sortByDay = (a, b) =>
+  dayjs(a.dateFrom) - dayjs(b.dateFrom);
+
+const sortByTime = (a, b) => {
+  const durationA = dayjs(a.dateTo).diff(dayjs(a.dateFrom));
+  const durationB = dayjs(b.dateTo).diff(dayjs(b.dateFrom));
+  return durationB - durationA;
+};
+
+const sortByPrice = (a, b) =>
+  b.basePrice - a.basePrice;
+
+export { humanizePointDate, humanizePointTime, humanizeDateTime, getEventDuration,
+  isFuture, isPast, isPresent, sortByDay, sortByTime, sortByPrice};
