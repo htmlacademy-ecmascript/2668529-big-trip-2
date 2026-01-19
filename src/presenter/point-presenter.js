@@ -47,7 +47,8 @@ export default class PointPresenter {
       selectedOffers: point.offers,
       destination,
       onSubmit: this.#handleFormSubmit,
-      onRollupClick: this.#handleRollupClick
+      onRollupClick: this.#handleRollupClick,
+      pointsModel: this.#pointsModel
     });
 
     if (!prevPointView && !prevFormView) {
