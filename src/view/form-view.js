@@ -175,14 +175,7 @@ export default class FormView extends AbstractStatefulView {
     this.#allDestinations = allDestinations;
     this.#onSubmit = onSubmit;
     this.#onRollupClick = onRollupClick;
-
-    this._setState({
-      point,
-      offers,
-      selectedOffers,
-      destination
-    });
-
+    this._setState({point, offers, selectedOffers, destination});
     this._restoreHandlers();
   }
 
@@ -230,7 +223,7 @@ export default class FormView extends AbstractStatefulView {
 
   #destinationInputHandler = (evt) => {
     const name = evt.target.value.trim();
-    const destination = this.#pointsModel.getDestinationByName(name);
+    const destination = this.#allDestinations.find((dest) => dest.name === name);
 
     if (!destination) {
       evt.target.value = '';

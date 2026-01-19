@@ -11,6 +11,7 @@ export default class TripPresenter {
   #tripEventsContainer = null;
   #pointsModel = null;
   #tripPoints = [];
+  #allDestinations = [];
   #eventList = new PointListView();
   #emptyList = new EmptyListView();
   #sortComponent = null;
@@ -24,6 +25,7 @@ export default class TripPresenter {
 
   init() {
     this.#tripPoints = [...this.#pointsModel.points];
+    this.#allDestinations = [...this.#pointsModel.destinations];
     this.#renderApp();
   }
 
@@ -51,6 +53,7 @@ export default class TripPresenter {
     const pointPresenter = new PointPresenter({
       eventList: this.#eventList,
       pointsModel: this.#pointsModel,
+      allDestinations: this.#allDestinations,
       onDataChange: this.#handlePointChange,
       onModeChange: this.#handleModeChange
     });
