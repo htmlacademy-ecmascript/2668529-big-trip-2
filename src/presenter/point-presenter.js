@@ -10,6 +10,7 @@ const Mode = {
 export default class PointPresenter {
   #eventList = null;
   #pointsModel = null;
+  #allDestinations = [];
   #point = null;
   #pointView = null;
   #formView = null;
@@ -17,9 +18,10 @@ export default class PointPresenter {
   #handleModeChange = null;
   #mode = Mode.DEFAULT;
 
-  constructor({ eventList, pointsModel, onDataChange, onModeChange }) {
+  constructor({ eventList, pointsModel, allDestinations, onDataChange, onModeChange }) {
     this.#eventList = eventList;
     this.#pointsModel = pointsModel;
+    this.#allDestinations = allDestinations;
     this.#handleDataChange = onDataChange;
     this.#handleModeChange = onModeChange;
   }
@@ -46,8 +48,10 @@ export default class PointPresenter {
       offers: formOffers,
       selectedOffers: point.offers,
       destination,
+      pointsModel: this.#pointsModel,
+      allDestinations: this.#allDestinations,
       onSubmit: this.#handleFormSubmit,
-      onRollupClick: this.#handleRollupClick
+      onRollupClick: this.#handleRollupClick,
     });
 
     if (!prevPointView && !prevFormView) {
@@ -87,6 +91,11 @@ export default class PointPresenter {
     if (this.#mode === Mode.DEFAULT) {
       return;
     }
+    this.#formView.updateElement({
+      point: this.#point,
+      selectedOffers: this.#point.offers,
+      destination: this.#pointsModel.getDestinationById(this.#point.destination)
+    });
     replace(this.#pointView, this.#formView);
     document.removeEventListener('keydown', this.#handleFormEscKeyDown);
     this.#mode = Mode.DEFAULT;

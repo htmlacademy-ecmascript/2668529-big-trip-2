@@ -669,7 +669,12 @@ main {
     width: 130px;
     text-align: center; }
   .event__input--price {
-    width: 66px; }
+    width: 66px;
+    -moz-appearance: textfield; }
+  .event__input--price::-webkit-inner-spin-button,
+  .event__input--price::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;}
 
 .event__save-btn {
   margin-right: 18px; }

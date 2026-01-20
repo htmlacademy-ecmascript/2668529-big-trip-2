@@ -66,5 +66,16 @@ export const mockPoints = [
     isFavorite: false,
     offers: [],
     type: 'bus'
+  },
+  {
+    id: nanoid(),
+    basePrice: 11252,
+    dateFrom: '2026-01-20T00:00:00.000Z',
+    dateTo: '2026-01-20T12:00:00.000Z',
+    destination: 'dest-4',
+    isFavorite: true,
+    offers: ['of-flight-1',
+      'of-flight-2'],
+    type: 'flight'
   }
 ];
