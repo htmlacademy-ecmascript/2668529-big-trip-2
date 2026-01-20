@@ -1,6 +1,8 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { humanizeDateTime } from '../utils/date-time.js';
 import { POINTS_TYPE } from '../const.js';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
 
 const createTypeTemplate = (type, currentType, id) => {
   const isChecked = type === currentType ? 'checked' : '';
