@@ -144,13 +144,9 @@ function createFormTemplate(state, allDestinations = []) {
             </label>
             <input class="event__input event__input--price"
                id="event-price-${id}"
-               type="number"
+               type="text"
                name="event-price"
-               value="${basePrice}"
-               min="0"
-               step="1"
-               inputmode="numeric"
-               style="-moz-appearance: textfield;">
+               value="${basePrice}">
           </div>
 
           <button class="event__save-btn btn btn--blue" type="submit">Save</button>
@@ -174,6 +170,8 @@ export default class FormView extends AbstractStatefulView {
   #onRollupClick = null;
   #pointsModel = null;
   #allDestinations = [];
+  #datepickerStart = null;
+  #datepickerEnd = null;
 
   constructor({ point, offers, selectedOffers, destination, onSubmit, onRollupClick, pointsModel, allDestinations }) {
     super();
@@ -187,6 +185,18 @@ export default class FormView extends AbstractStatefulView {
 
   get template() {
     return createFormTemplate(this._state, this.#allDestinations);
+  }
+
+  removeElement() {
+    super.removeElement();
+    if (this.#datepickerStart) {
+      this.#datepickerStart.destroy();
+      this.#datepickerStart = null;
+    }
+    if (this.#datepickerEnd) {
+      this.#datepickerEnd.destroy();
+      this.#datepickerEnd = null;
+    }
   }
 
   get formElement() {
@@ -204,6 +214,7 @@ export default class FormView extends AbstractStatefulView {
     this.element.querySelector('.event__input--destination')?.addEventListener('input', this.#destinationInputHandler);
     this.element.querySelector('.event__available-offers')?.addEventListener('change', this.#offersChangeHandler);
     this.element.querySelector('.event__input--price')?.addEventListener('input', this.#priceChangeHandler);
+    this.#setDatePickers();
   }
 
   #formSubmitHandler = (evt) => {
@@ -281,5 +292,35 @@ export default class FormView extends AbstractStatefulView {
         basePrice: newPrice
       }
     });
+  };
+
+  #startDateChangeHandler = ([selectedDate]) => {
+    this._setState({point: {...this._state.point, dateFrom: selectedDate,},});
+  };
+
+  #endDateChangeHandler = ([selectedDate]) => {
+    this._setState({point: {...this._state.point, dateTo: selectedDate,},});
+  };
+
+  #setDatePickers = () => {
+    this.#datepickerStart = flatpickr(
+      this.element.querySelector('.event__input--time[name="event-start-time"]'),
+      {
+        enableTime: true,
+        dateFormat: 'd/m/y H:i',
+        defaultDate: this._state.point.dateFrom,
+        onChange: this.#startDateChangeHandler,
+      }
+    );
+
+    this.#datepickerEnd = flatpickr(
+      this.element.querySelector('.event__input--time[name="event-end-time"]'),
+      {
+        enableTime: true,
+        dateFormat: 'd/m/y H:i',
+        defaultDate: this._state.point.dateTo,
+        onChange: this.#endDateChangeHandler,
+      }
+    );
   };
 }
