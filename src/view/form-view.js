@@ -141,10 +141,14 @@ function createFormTemplate(state, allDestinations = []) {
               <span class="visually-hidden">Price</span>€
             </label>
             <input class="event__input event__input--price"
-              id="event-price-${id}"
-              type="number"
-              name="event-price"
-              value="${basePrice}">
+               id="event-price-${id}"
+               type="number"
+               name="event-price"
+               value="${basePrice}"
+               min="0"
+               step="1"
+               inputmode="numeric"
+               style="-moz-appearance: textfield;">
           </div>
 
           <button class="event__save-btn btn btn--blue" type="submit">Save</button>
@@ -257,9 +261,21 @@ export default class FormView extends AbstractStatefulView {
   };
 
   #priceChangeHandler = (evt) => {
-    const newPrice = parseInt(evt.target.value, 10) || 0;
-    this.updateElement({
-      point: { ...this._state.point, basePrice: newPrice }
+    let value = evt.target.value.trim();
+    if (value.startsWith('-')) {
+      value = value.replace('-', '');
+    }
+    if (value === '') {
+      evt.target.value = '';
+      return;
+    }
+    const newPrice = Math.max(0, parseInt(value, 10) || 0);
+    evt.target.value = newPrice;
+    this._setState({
+      point: {
+        ...this._state.point,
+        basePrice: newPrice
+      }
     });
   };
 }
