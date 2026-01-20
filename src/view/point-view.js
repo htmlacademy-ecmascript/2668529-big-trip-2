@@ -1,19 +1,20 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import { humanizePointDate, humanizePointTime, getEventDuration } from '../utils/date-time.js';
 
-function createOfferTemplate({title, price}) {
+function createOfferTemplate(offer) {
   return(
     `<li class="event__offer">
-                    <span class="event__offer-title">${title}</span>
+                    <span class="event__offer-title">${offer.title}</span>
                     &plus;&euro;&nbsp;
-                    <span class="event__offer-price">${price}</span>
+                    <span class="event__offer-price">${offer.price}</span>
                   </li>`
   );
 }
 
-function createPointTemplate(point, offers, destination) {
+function createPointTemplate(point, offers = [], destination) {
   const {basePrice, dateFrom, dateTo, type, isFavorite} = point;
   const {name} = destination;
+  const eventDuration = getEventDuration(point.dateFrom, point.dateTo);
 
   return (
     `<li class="trip-events__item">
@@ -29,7 +30,7 @@ function createPointTemplate(point, offers, destination) {
                     &mdash;
                     <time class="event__end-time" datetime="${dateTo}">${humanizePointTime(dateTo)}</time>
                   </p>
-                  <p class="event__duration">${getEventDuration(dateFrom, dateTo)}</p>
+                  <p class="event__duration">${eventDuration}</p>
                 </div>
                 <p class="event__price">
                   &euro;&nbsp;<span class="event__price-value">${basePrice}</span>

@@ -107,7 +107,9 @@ export default class TripPresenter {
 
   #handlePointChange = (updatedPoint) => {
     this.#tripPoints = updateItem(this.#tripPoints, updatedPoint);
-    this.#allPointPresenters.get(updatedPoint.id).init(updatedPoint);
+    this.#sortPoints(this.#currentSortType);
+    this.#clearEventList();
+    this.#renderPoints();
   };
 
   #handleModeChange = () => {

@@ -219,10 +219,8 @@ export default class FormView extends AbstractStatefulView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#onSubmit({
-      ...this._state.point,
-      offers: this._state.selectedOffers
-    });
+    const updatedPoint = {...this._state.point, offers: this._state.selectedOffers};
+    this.#onSubmit(updatedPoint);
   };
 
   #rollupClickHandler = (evt) => {
@@ -233,27 +231,17 @@ export default class FormView extends AbstractStatefulView {
   #typeChangeHandler = (evt) => {
     const newType = evt.target.value;
     const offers = this.#pointsModel.getOffersByType(newType);
-
-    this.updateElement({
-      point: { ...this._state.point, type: newType, offers: [] },
-      offers,
-      selectedOffers: []
-    });
+    this.updateElement({point: { ...this._state.point, type: newType, offers: [] }, offers, selectedOffers: []});
   };
 
   #destinationInputHandler = (evt) => {
     const name = evt.target.value.trim();
     const destination = this.#allDestinations.find((dest) => dest.name === name);
-
     if (!destination) {
       evt.target.value = '';
       return;
     }
-
-    this.updateElement({
-      point: { ...this._state.point, destination: destination.id },
-      destination
-    });
+    this.updateElement({point: { ...this._state.point, destination: destination.id }, destination});
   };
 
   #offersChangeHandler = (evt) => {
@@ -270,9 +258,7 @@ export default class FormView extends AbstractStatefulView {
       selected.delete(id);
     }
 
-    this._setState({
-      selectedOffers: [...selected]
-    });
+    this._setState({selectedOffers: [...selected]});
   };
 
   #priceChangeHandler = (evt) => {
@@ -286,12 +272,7 @@ export default class FormView extends AbstractStatefulView {
     }
     const newPrice = Math.max(0, parseInt(value, 10) || 0);
     evt.target.value = newPrice;
-    this._setState({
-      point: {
-        ...this._state.point,
-        basePrice: newPrice
-      }
-    });
+    this._setState({point: {...this._state.point, basePrice: newPrice}});
   };
 
   #startDateChangeHandler = ([selectedDate]) => {
@@ -308,6 +289,7 @@ export default class FormView extends AbstractStatefulView {
       {
         enableTime: true,
         dateFormat: 'd/m/y H:i',
+        minDate: new Date(),
         defaultDate: this._state.point.dateFrom,
         onChange: this.#startDateChangeHandler,
       }
@@ -319,6 +301,7 @@ export default class FormView extends AbstractStatefulView {
         enableTime: true,
         dateFormat: 'd/m/y H:i',
         defaultDate: this._state.point.dateTo,
+        minDate: this._state.point.dateFrom,
         onChange: this.#endDateChangeHandler,
       }
     );
