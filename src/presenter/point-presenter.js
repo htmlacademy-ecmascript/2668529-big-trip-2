@@ -46,7 +46,7 @@ export default class PointPresenter {
     this.#formView = new FormView({
       point,
       offers: formOffers,
-      selectedOffers: point.offers,
+      selectedOffers: point.offers.filter((id) => formOffers.some((offer) => offer.id === id)),
       destination,
       pointsModel: this.#pointsModel,
       allDestinations: this.#allDestinations,

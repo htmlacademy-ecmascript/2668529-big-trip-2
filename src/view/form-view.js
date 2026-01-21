@@ -241,7 +241,11 @@ export default class FormView extends AbstractStatefulView {
       evt.target.value = '';
       return;
     }
-    this.updateElement({point: { ...this._state.point, destination: destination.id }, destination});
+    this.updateElement({
+      point: { ...this._state.point, destination: destination.id },
+      destination,
+      selectedOffers: this._state.selectedOffers
+    });
   };
 
   #offersChangeHandler = (evt) => {
@@ -249,8 +253,8 @@ export default class FormView extends AbstractStatefulView {
       return;
     }
 
-    const id = Number(evt.target.id.replace('event-offer-', ''));
-    const selected = new Set(this._state.point.offers);
+    const id = evt.target.id.replace('event-offer-', '');
+    const selected = new Set(this._state.selectedOffers);
 
     if (evt.target.checked) {
       selected.add(id);
