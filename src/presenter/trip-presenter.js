@@ -3,7 +3,7 @@ import SortView from '../view/sort-view.js';
 import PointListView from '../view/point-list-view.js';
 import EmptyListView from '../view/empty-list-view.js';
 import PointPresenter from '../presenter/point-presenter.js';
-import { updateItem } from '../utils/common.js';
+//import { updateItem } from '../utils/common.js';
 import { SortType } from '../const.js';
 import { sortByDay, sortByTime, sortByPrice } from '../utils/date-time.js';
 
@@ -21,6 +21,7 @@ export default class TripPresenter {
   constructor({ tripEventsContainer, pointsModel }) {
     this.#tripEventsContainer = tripEventsContainer;
     this.#pointsModel = pointsModel;
+    this.#pointsModel.addObserver(this.#handleModelEvent);
   }
 
   get points() {
@@ -58,7 +59,7 @@ export default class TripPresenter {
       eventList: this.#eventList,
       pointsModel: this.#pointsModel,
       allDestinations: this.#allDestinations,
-      onDataChange: this.#handlePointChange,
+      onDataChange: this.#handleViewAction,
       onModeChange: this.#handleModeChange
     });
     pointPresenter.init(point);
@@ -109,11 +110,28 @@ export default class TripPresenter {
     this.#renderPoints();
   };
 
-  #handlePointChange = (updatedPoint) => {
+  /*#handlePointChange = (updatedPoint) => {
     this.#tripPoints = updateItem(this.#tripPoints, updatedPoint);
     this.#sortPoints(this.#currentSortType);
     this.#clearEventList();
     this.#renderPoints();
+  };*/
+  #handleViewAction = (actionType, updateType, update) => {
+    // eslint-disable-next-line no-console
+    console.log(actionType, updateType, update);
+    // Здесь будем вызывать обновление модели.
+    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
+    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
+    // update - обновленные данные
+  };
+
+  #handleModelEvent = (updateType, data) => {
+    // eslint-disable-next-line no-console
+    console.log(updateType, data);
+    // В зависимости от типа изменений решаем, что делать:
+    // - обновить часть списка (например, когда поменялось описание)
+    // - обновить список (например, когда задача ушла в архив)
+    // - обновить всю доску (например, при переключении фильтра)
   };
 
   #handleModeChange = () => {
