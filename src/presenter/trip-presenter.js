@@ -5,10 +5,13 @@ import EmptyListView from '../view/empty-list-view.js';
 import PointPresenter from '../presenter/point-presenter.js';
 import { SortType, UpdateType, UserAction } from '../const.js';
 import { sortByDay, sortByTime, sortByPrice } from '../utils/date-time.js';
+import {filter} from '../utils/filter.js';
+
 
 export default class TripPresenter {
   #tripEventsContainer = null;
   #pointsModel = null;
+  #filterModel = null;
   #allDestinations = [];
   #eventList = new PointListView();
   #emptyList = new EmptyListView();
@@ -16,25 +19,29 @@ export default class TripPresenter {
   #allPointPresenters = new Map();
   #currentSortType = SortType.DAY;
 
-  constructor({ tripEventsContainer, pointsModel }) {
+  constructor({ tripEventsContainer, pointsModel, filterModel }) {
     this.#tripEventsContainer = tripEventsContainer;
     this.#pointsModel = pointsModel;
+    this.#filterModel = filterModel;
     this.#pointsModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   get tripPoints() {
     const points = [...this.#pointsModel.points];
+    const filterType = this.#filterModel.filter;
+    const filteredPoints = filter[filterType](points);
 
     switch (this.#currentSortType) {
       case SortType.DAY:
-        return points.sort(sortByDay);
+        return filteredPoints.sort(sortByDay);
       case SortType.TIME:
-        return points.sort(sortByTime);
+        return filteredPoints.sort(sortByTime);
       case SortType.PRICE:
-        return points.sort(sortByPrice);
+        return filteredPoints.sort(sortByPrice);
     }
 
-    return points;
+    return filteredPoints;
   }
 
   init() {

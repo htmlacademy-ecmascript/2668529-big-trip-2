@@ -37,8 +37,8 @@ export const mockPoints = [
   {
     id: nanoid(),
     basePrice: 2200,
-    dateFrom: '2025-09-01T09:00:00.000Z',
-    dateTo: '2025-09-01T12:00:00.000Z',
+    dateFrom: '2026-01-23T00:00:00.000Z',
+    dateTo: '2026-01-24T12:00:00.000Z',
     destination: 'dest-1',
     isFavorite: false,
     offers: [
