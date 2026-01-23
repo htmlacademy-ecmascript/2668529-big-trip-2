@@ -3,10 +3,9 @@ import SortView from '../view/sort-view.js';
 import PointListView from '../view/point-list-view.js';
 import EmptyListView from '../view/empty-list-view.js';
 import PointPresenter from '../presenter/point-presenter.js';
-import { SortType, UpdateType, UserAction } from '../const.js';
+import {SortType, UpdateType, UserAction, FilterType} from '../const.js';
 import { sortByDay, sortByTime, sortByPrice } from '../utils/date-time.js';
 import {filter} from '../utils/filter.js';
-
 
 export default class TripPresenter {
   #tripEventsContainer = null;
@@ -14,10 +13,11 @@ export default class TripPresenter {
   #filterModel = null;
   #allDestinations = [];
   #eventList = new PointListView();
-  #emptyList = new EmptyListView();
+  #emptyList = null;
   #sortComponent = null;
   #allPointPresenters = new Map();
   #currentSortType = SortType.DAY;
+  #filterType = FilterType.EVERYTHING;
 
   constructor({ tripEventsContainer, pointsModel, filterModel }) {
     this.#tripEventsContainer = tripEventsContainer;
@@ -29,8 +29,8 @@ export default class TripPresenter {
 
   get tripPoints() {
     const points = [...this.#pointsModel.points];
-    const filterType = this.#filterModel.filter;
-    const filteredPoints = filter[filterType](points);
+    this.#filterType = this.#filterModel.filter;
+    const filteredPoints = filter[this.#filterType](points);
 
     switch (this.#currentSortType) {
       case SortType.DAY:
@@ -58,6 +58,7 @@ export default class TripPresenter {
   }
 
   #renderEmptyList() {
+    this.#emptyList = new EmptyListView({filterType: this.#filterType });
     render(this.#emptyList, this.#tripEventsContainer);
   }
 
@@ -96,6 +97,13 @@ export default class TripPresenter {
     this.#allPointPresenters.clear();
   }
 
+  #clearApp() {
+    this.#clearEventList();
+    remove(this.#sortComponent);
+    remove(this.#emptyList);
+    remove(this.#eventList);
+  }
+
   #handleSortTypeChange = (newSortType) => {
     if (this.#currentSortType === newSortType) {
       return;
@@ -128,8 +136,8 @@ export default class TripPresenter {
         break;
       case UpdateType.MINOR:
       case UpdateType.MAJOR:
-        this.#clearEventList();
-        this.#renderPoints();
+        this.#clearApp();
+        this.#renderApp();
         break;
     }
   };
