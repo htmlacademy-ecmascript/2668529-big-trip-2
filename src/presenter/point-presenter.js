@@ -32,9 +32,9 @@ export default class PointPresenter {
   init(point) {
     this.#point = point;
 
-    const destination = this.#destinationsModel.getDestinationById(point.destination);
+    const destination = this.#destinationsModel.getDestinationById(point.destination) || {id: null, name: '', description: '', pictures: []};
     const offers = this.#offersModel.getOffersByType(point.type).filter((offer) => point.offers.includes(offer.id));
-    const formOffers = this.#offersModel.getOffersByType(point.type);
+    const formOffers = this.#offersModel.getOffersByType(point.type) || [];
     const prevPointView = this.#pointView;
     const prevFormView = this.#formView;
 
@@ -52,7 +52,7 @@ export default class PointPresenter {
       selectedOffers: point.offers.filter((id) => formOffers.some((offer) => offer.id === id)),
       destination,
       offersModel: this.#offersModel,
-      allDestinations: this.#destinationsModel.destinations,
+      destinationsModel: this.#destinationsModel,
       onSubmit: this.#handleFormSubmit,
       onRollupClick: this.#handleRollupClick,
       onDeleteClick: this.#handleDeleteClick

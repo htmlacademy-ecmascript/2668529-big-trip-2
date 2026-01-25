@@ -41,7 +41,7 @@ export default class NewPointPresenter {
       selectedOffers: [],
       destination: null,
       offersModel: this.#offersModel,
-      allDestinations: this.#destinationsModel.destinations,
+      destinationsModel: this.#destinationsModel,
       onSubmit: this.#handleFormSubmit,
       onRollupClick: this.#handleRollupClick,
       onDeleteClick: this.#handleDeleteClick

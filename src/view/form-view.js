@@ -171,14 +171,14 @@ export default class FormView extends AbstractStatefulView {
   #handleRollupClick = null;
   #handleDeleteClick = null;
   #offersModel = null;
-  #allDestinations = [];
+  #destinationsModel = null;
   #datepickerStart = null;
   #datepickerEnd = null;
 
-  constructor({ point, offers, selectedOffers, destination, onSubmit, onRollupClick, onDeleteClick, offersModel, allDestinations }) {
+  constructor({ point, offers, selectedOffers, destination, onSubmit, onRollupClick, onDeleteClick, offersModel, destinationsModel }) {
     super();
     this.#offersModel = offersModel;
-    this.#allDestinations = allDestinations;
+    this.#destinationsModel = destinationsModel;
     this.#handleFormSubmit = onSubmit;
     this.#handleRollupClick = onRollupClick;
     this.#handleDeleteClick = onDeleteClick;
@@ -187,7 +187,7 @@ export default class FormView extends AbstractStatefulView {
   }
 
   get template() {
-    return createFormTemplate(this._state, this.#allDestinations);
+    return createFormTemplate(this._state, this.#destinationsModel.destinations);
   }
 
   removeElement() {
@@ -245,7 +245,7 @@ export default class FormView extends AbstractStatefulView {
 
   #destinationInputHandler = (evt) => {
     const name = evt.target.value.trim();
-    const destination = this.#allDestinations.find((dest) => dest.name === name);
+    const destination = this.#destinationsModel.destinations.find((dest) => dest.name === name);
     if (!destination) {
       evt.target.value = '';
       return;

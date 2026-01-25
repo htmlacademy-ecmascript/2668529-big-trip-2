@@ -59,7 +59,6 @@ export default class TripPresenter {
   }
 
   init() {
-    //this.#allDestinations = this.#destinationsModel.destinations;
     this.#renderApp();
   }
 
