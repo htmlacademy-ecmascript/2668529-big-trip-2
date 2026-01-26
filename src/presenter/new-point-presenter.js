@@ -44,8 +44,7 @@ export default class NewPointPresenter {
       offersModel: this.#offersModel,
       destinationsModel: this.#destinationsModel,
       onSubmit: this.#handleFormSubmit,
-      onRollupClick: this.#handleRollupClick,
-      onDeleteClick: this.#handleDeleteClick
+      onCancelClick: this.#handleCancelClick
     });
 
     render(this.#formView, this.#eventList.element, RenderPosition.AFTERBEGIN);
@@ -69,11 +68,7 @@ export default class NewPointPresenter {
     this.destroy();
   };
 
-  #handleRollupClick = () => {
-    this.destroy();
-  };
-
-  #handleDeleteClick = () => {
+  #handleCancelClick = () => {
     this.destroy();
   };
 

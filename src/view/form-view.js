@@ -174,14 +174,16 @@ export default class FormView extends AbstractStatefulView {
   #destinationsModel = null;
   #datepickerStart = null;
   #datepickerEnd = null;
+  #handleCancelClick = null;
 
-  constructor({ point, offers, selectedOffers, destination, onSubmit, onRollupClick, onDeleteClick, offersModel, destinationsModel }) {
+  constructor({ point, offers, selectedOffers, destination, onSubmit, onRollupClick, onDeleteClick, onCancelClick, offersModel, destinationsModel }) {
     super();
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
     this.#handleFormSubmit = onSubmit;
     this.#handleRollupClick = onRollupClick;
     this.#handleDeleteClick = onDeleteClick;
+    this.#handleCancelClick = onCancelClick;
     this._setState({point, offers, selectedOffers, destination});
     this._restoreHandlers();
   }
@@ -211,13 +213,18 @@ export default class FormView extends AbstractStatefulView {
   }
 
   _restoreHandlers() {
+    const resetBtn = this.element.querySelector('.event__reset-btn');
+    if (this._state.point.id === null) {
+      resetBtn.addEventListener('click', this.#cancelClickHandler);
+    } else {
+      resetBtn.addEventListener('click', this.#formDeleteClickHandler);
+    }
     this.formElement.addEventListener('submit', this.#formSubmitHandler);
     this.rollupButton?.addEventListener('click', this.#rollupClickHandler);
     this.element.querySelector('.event__type-group')?.addEventListener('change', this.#typeChangeHandler);
     this.element.querySelector('.event__input--destination')?.addEventListener('change', this.#destinationInputHandler);
     this.element.querySelector('.event__available-offers')?.addEventListener('change', this.#offersChangeHandler);
     this.element.querySelector('.event__input--price')?.addEventListener('input', this.#priceChangeHandler);
-    this.element.querySelector('.event__reset-btn')?.addEventListener('click', this.#formDeleteClickHandler);
     this.#setDatePickers();
   }
 
@@ -230,6 +237,11 @@ export default class FormView extends AbstractStatefulView {
   #rollupClickHandler = (evt) => {
     evt.preventDefault();
     this.#handleRollupClick();
+  };
+
+  #cancelClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleCancelClick();
   };
 
   #formDeleteClickHandler = (evt) => {
