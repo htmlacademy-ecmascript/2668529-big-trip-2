@@ -53,13 +53,13 @@ export default class NewPointPresenter {
   }
 
   destroy() {
-    if (this.#formView === null) {
+    if (!this.#formView) {
       return;
     }
-    this.#handleDestroy();
     remove(this.#formView);
     this.#formView = null;
     document.removeEventListener('keydown', this.#escKeyDownHandler);
+    this.#handleDestroy?.();
   }
 
   #handleFormSubmit = (point) => {

@@ -85,9 +85,9 @@ export default class PointPresenter {
   }
 
   #replacePointToForm() {
+    this.#handleModeChange();
     replace(this.#formView, this.#pointView);
     document.addEventListener('keydown', this.#handleFormEscKeyDown);
-    this.#handleModeChange();
     this.#mode = Mode.EDITING;
   }
 
@@ -113,7 +113,6 @@ export default class PointPresenter {
   };
 
   #handleEditClick = () => {
-    this.#handleModeChange();
     this.#replacePointToForm();
   };
 
