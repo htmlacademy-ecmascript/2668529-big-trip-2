@@ -1,7 +1,6 @@
 import {remove, render, RenderPosition} from '../framework/render.js';
 import FormView from '../view/form-view.js';
 import {UserAction, UpdateType, POINTS_TYPE} from '../const.js';
-import {nanoid} from 'nanoid';
 
 const BLANK_POINT = {
   id: null,
@@ -10,6 +9,7 @@ const BLANK_POINT = {
   dateFrom: new Date(),
   dateTo: new Date(),
   basePrice: 0,
+  isFavorite: false,
   offers: []
 };
 
@@ -63,8 +63,7 @@ export default class NewPointPresenter {
   }
 
   #handleFormSubmit = (point) => {
-    const pointWithId = { ...point, id: nanoid() };
-    this.#handleDataChange(UserAction.ADD_POINT, UpdateType.MINOR, pointWithId);
+    this.#handleDataChange(UserAction.ADD_POINT, UpdateType.MINOR, point);
     this.destroy();
   };
 
