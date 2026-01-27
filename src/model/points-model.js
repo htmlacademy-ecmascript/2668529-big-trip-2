@@ -68,13 +68,8 @@ export default class PointsModel extends Observable {
       dateTo: new Date(point.date_to),
       destination: point.destination,
       isFavorite: point.is_favorite,
-      offers: point.offers.slice(),
+      offers: point.offers,
     };
-
-    delete adaptedPoint['base_price'];
-    delete adaptedPoint['date_from'];
-    delete adaptedPoint['date_to'];
-    delete adaptedPoint['is_favorite'];
 
     return adaptedPoint;
   }
