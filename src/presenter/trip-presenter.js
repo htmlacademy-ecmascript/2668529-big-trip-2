@@ -5,6 +5,7 @@ import EmptyListView from '../view/empty-list-view.js';
 import PointPresenter from '../presenter/point-presenter.js';
 import NewPointPresenter from './new-point-presenter.js';
 import LoadingView from '../view/loading-view.js';
+import LoadingErrorView from '../view/loading-error-view.js';
 import { SortType, UpdateType, UserAction, FilterType } from '../const.js';
 import { sortByDay, sortByTime, sortByPrice } from '../utils/date-time.js';
 import { filter } from '../utils/filter.js';
@@ -18,12 +19,14 @@ export default class TripPresenter {
   #emptyList = null;
   #sortComponent = null;
   #newPointPresenter = null;
+  #loadingErrorComponent = new LoadingErrorView();
   #loadingComponent = new LoadingView();
   #eventList = new PointListView();
   #allPointPresenters = new Map();
   #currentSortType = SortType.DAY;
   #filterType = FilterType.EVERYTHING;
   #isLoading = true;
+  #isLoadingError = false;
 
   constructor({ tripEventsContainer, pointsModel, offersModel, destinationsModel, filterModel, onNewPointDestroy }) {
     this.#tripEventsContainer = tripEventsContainer;
@@ -90,6 +93,10 @@ export default class TripPresenter {
     render(this.#loadingComponent, this.#tripEventsContainer);
   }
 
+  #renderLoadingError() {
+    render(this.#loadingErrorComponent, this.#tripEventsContainer);
+  }
+
   #renderEmptyList() {
     this.#emptyList = new EmptyListView({filterType: this.#filterType });
     render(this.#emptyList, this.#tripEventsContainer);
@@ -121,6 +128,11 @@ export default class TripPresenter {
 
     if (this.#isLoading) {
       this.#renderLoading();
+      return;
+    }
+
+    if (this.#isLoadingError) {
+      this.#renderLoadingError();
       return;
     }
 
@@ -184,6 +196,11 @@ export default class TripPresenter {
       case UpdateType.INIT:
         this.#isLoading = false;
         remove(this.#loadingComponent);
+        this.#renderApp();
+        break;
+      case UpdateType.LOADING_ERROR:
+        this.#isLoading = false;
+        this.#isLoadingError = true;
         this.#renderApp();
         break;
     }

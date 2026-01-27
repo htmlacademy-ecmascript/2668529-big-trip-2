@@ -19,6 +19,8 @@ export default class OffersModel extends Observable {
       this.#offers = await this.#offersApiService.offers;
     } catch (err) {
       this.#offers = [];
+      this._notify(UpdateType.LOADING_ERROR);
+      return;
     }
     this._notify(UpdateType.INIT);
   }
