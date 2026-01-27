@@ -25,7 +25,7 @@ export default class PointsApiService extends ApiService {
   }
 
   #adaptToServer(point) {
-    return {
+    const adaptedPoint = {
       id: point.id,
       type: point.type,
       'base_price': point.basePrice,
@@ -35,5 +35,12 @@ export default class PointsApiService extends ApiService {
       'is_favorite': point.isFavorite,
       offers: point.offers.slice(),
     };
+
+    delete adaptedPoint.basePrice;
+    delete adaptedPoint.dateFrom;
+    delete adaptedPoint.dateTo;
+    delete adaptedPoint.isFavorite;
+
+    return adaptedPoint;
   }
 }

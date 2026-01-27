@@ -48,3 +48,4 @@ function handleNewPointButtonClick() {
 render(newPointButtonComponent, newPointButtonContainer);
 filterPresenter.init();
 tripPresenter.init();
+pointsModel.init();
