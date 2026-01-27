@@ -1,4 +1,3 @@
-//import { mockPoints } from '../mock/points.js';
 import Observable from '../framework/observable.js';
 
 export default class PointsModel extends Observable {
@@ -10,8 +9,7 @@ export default class PointsModel extends Observable {
     this.#pointsApiService = pointsApiService;
 
     this.#pointsApiService.points.then((points) => {
-      // eslint-disable-next-line no-console
-      console.log(points);
+      this.#points = points.map(this.#adaptToClient);
     });
   }
 
@@ -40,5 +38,19 @@ export default class PointsModel extends Observable {
     }
     this.#points = [...this.#points.slice(0, index), ...this.#points.slice(index + 1)];
     this._notify(updateType);
+  }
+
+  #adaptToClient(point) {
+    const adaptedPoint = {
+      id: point.id,
+      type: point.type,
+      basePrice: point.base_price,
+      dateFrom: new Date(point.date_from),
+      dateTo: new Date(point.date_to),
+      destination: point.destination,
+      isFavorite: point.is_favorite,
+      offers: point.offers.slice(),
+    };
+    return adaptedPoint;
   }
 }
