@@ -103,7 +103,7 @@ export default class PointPresenter {
     }
   }
 
-  /*setAborting() {
+  setAborting() {
     if (this.#mode === Mode.EDITING) {
       this.#formView.shake();
       this.#formView.updateElement({
@@ -112,7 +112,7 @@ export default class PointPresenter {
         isDeleting: false,
       });
     }
-  }*/
+  }
 
   #replacePointToForm() {
     this.#handleModeChange();

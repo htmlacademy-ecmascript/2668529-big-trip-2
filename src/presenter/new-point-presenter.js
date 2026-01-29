@@ -68,13 +68,13 @@ export default class NewPointPresenter {
     });
   }
 
-  /*setAborting() {
+  setAborting() {
     this.#formView.shake();
     this.#formView.updateElement({
       isDisabled: false,
       isSaving: false
     });
-  }*/
+  }
 
   #handleFormSubmit = (point) => {
     this.#handleDataChange(UserAction.ADD_POINT, UpdateType.MINOR, point);
