@@ -3,6 +3,8 @@ import ApiService from '../framework/api-service.js';
 const Method = {
   GET: 'GET',
   PUT: 'PUT',
+  POST: 'POST',
+  DELETE: 'DELETE',
 };
 
 export default class PointsApiService extends ApiService {
@@ -19,12 +21,36 @@ export default class PointsApiService extends ApiService {
       headers: new Headers({'Content-Type': 'application/json'}),
     });
 
-    return await ApiService.parseResponse(response);
+    const parsedResponse = await ApiService.parseResponse(response);
+
+    return parsedResponse;
   }
+
+  async addPoint(point) {
+    const response = await this._load({
+      url: 'points',
+      method: Method.POST,
+      body: JSON.stringify(this.#adaptToServer(point)),
+      headers: new Headers({'Content-Type': 'application/json'}),
+    });
+
+    const parsedResponse = await ApiService.parseResponse(response);
+
+    return parsedResponse;
+  }
+
+  async deletePoint(point) {
+    const response = await this._load({
+      url: `points/${point.id}`,
+      method: Method.DELETE,
+    });
+
+    return response;
+  }
+
 
   #adaptToServer(point) {
     const adaptedPoint = {
-      id: point.id,
       type: point.type,
       'base_price': point.basePrice,
       'date_from': point.dateFrom instanceof Date ? point.dateFrom.toISOString() : null,
@@ -33,6 +59,10 @@ export default class PointsApiService extends ApiService {
       'is_favorite': point.isFavorite,
       offers: point.offers,
     };
+
+    if (point.id) {
+      adaptedPoint.id = point.id;
+    }
 
     return adaptedPoint;
   }
