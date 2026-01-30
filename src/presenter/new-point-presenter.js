@@ -69,10 +69,12 @@ export default class NewPointPresenter {
   }
 
   setAborting() {
-    this.#formView.shake();
-    this.#formView.updateElement({
-      isDisabled: false,
-      isSaving: false
+    this.#formView.shake(() => {
+      this.#formView.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
     });
   }
 

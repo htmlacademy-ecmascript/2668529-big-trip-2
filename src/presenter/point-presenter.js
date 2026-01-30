@@ -105,11 +105,12 @@ export default class PointPresenter {
 
   setAborting() {
     if (this.#mode === Mode.EDITING) {
-      this.#formView.shake();
-      this.#formView.updateElement({
-        isDisabled: false,
-        isSaving: false,
-        isDeleting: false,
+      this.#formView.shake(() => {
+        this.#formView.updateElement({
+          isDisabled: false,
+          isSaving: false,
+          isDeleting: false,
+        });
       });
     }
   }
