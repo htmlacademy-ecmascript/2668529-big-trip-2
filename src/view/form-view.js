@@ -5,13 +5,14 @@ import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import he from 'he';
 
-const createTypeTemplate = (type, currentType, id) => {
+const createTypeTemplate = (type, currentType, id, isDisabled) => {
   const isChecked = type === currentType ? 'checked' : '';
   return `
     <div class="event__type-item">
       <input id="event-type-${type}-${id}"
         class="event__type-input visually-hidden"
-        type="radio" name="event-type" value="${type}" ${isChecked}>
+        type="radio" name="event-type" value="${type}" ${isChecked}
+        ${isDisabled ? 'disabled' : ''}>
       <label class="event__type-label event__type-label--${type}"
         for="event-type-${type}-${id}">
         ${type[0].toUpperCase() + type.slice(1)}
@@ -19,14 +20,15 @@ const createTypeTemplate = (type, currentType, id) => {
     </div>`;
 };
 
-const createOfferTemplate = (offer, selectedOffers = []) => {
+const createOfferTemplate = (offer, selectedOffers = [], isDisabled) => {
   const isChecked = selectedOffers.includes(offer.id) ? 'checked' : '';
   return `
     <div class="event__offer-selector">
       <input class="event__offer-checkbox visually-hidden"
         id="event-offer-${offer.id}"
         type="checkbox"
-        name="event-offer-${offer.id}" ${isChecked}>
+        name="event-offer-${offer.id}" ${isChecked}
+        ${isDisabled ? 'disabled' : ''}>
       <label class="event__offer-label" for="event-offer-${offer.id}">
         <span class="event__offer-title">${offer.title}</span>
         +€&nbsp;<span class="event__offer-price">${offer.price}</span>
@@ -86,6 +88,15 @@ function createFormTemplate(state, allDestinations = []) {
   const destinationOptions = allDestinations
     .map((dest) => `<option value="${dest.name}"></option>`)
     .join('');
+  const resetButtonText = (() => {
+    if (id === null) {
+      return 'Cancel';
+    }
+    if (state.isDeleting) {
+      return 'Deleting...';
+    }
+    return 'Delete';
+  })();
 
   return `
     <li class="trip-events__item">
@@ -117,7 +128,8 @@ function createFormTemplate(state, allDestinations = []) {
               type="text"
               name="event-destination"
               value="${he.encode(destName)}"
-              list="destination-list-${id}">
+              list="destination-list-${id}"
+              ${state.isDisabled ? 'disabled' : ''}>
             <datalist id="destination-list-${id}">
               ${destinationOptions}
             </datalist>
@@ -129,14 +141,16 @@ function createFormTemplate(state, allDestinations = []) {
               id="event-start-time-${id}"
               type="text"
               name="event-start-time"
-              value="${humanizeDateTime(dateFrom)}">
+              value="${humanizeDateTime(dateFrom)}"
+              ${state.isDisabled ? 'disabled' : ''}>
             —
             <label class="visually-hidden" for="event-end-time-${id}">To</label>
             <input class="event__input event__input--time"
               id="event-end-time-${id}"
               type="text"
               name="event-end-time"
-              value="${humanizeDateTime(dateTo)}">
+              value="${humanizeDateTime(dateTo)}"
+              ${state.isDisabled ? 'disabled' : ''}>
           </div>
 
           <div class="event__field-group event__field-group--price">
@@ -147,11 +161,16 @@ function createFormTemplate(state, allDestinations = []) {
                id="event-price-${id}"
                type="text"
                name="event-price"
-               value="${basePrice}">
+               value="${basePrice}"
+               ${state.isDisabled ? 'disabled' : ''}>
           </div>
 
-          <button class="event__save-btn btn btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">${id === null ? 'Cancel' : 'Delete'}</button>
+          <button class="event__save-btn btn btn--blue" type="submit" ${state.isDisabled ? 'disabled' : ''}>
+            ${state.isSaving ? 'Saving...' : 'Save'}
+          </button>
+          <button class="event__reset-btn" type="reset" ${state.isDisabled ? 'disabled' : ''}>
+            ${resetButtonText}
+          </button>
 
           ${id !== null ? `<button class="event__rollup-btn" type="button">
               <span class="visually-hidden">Open event</span>
@@ -184,7 +203,15 @@ export default class FormView extends AbstractStatefulView {
     this.#handleRollupClick = onRollupClick;
     this.#handleDeleteClick = onDeleteClick;
     this.#handleCancelClick = onCancelClick;
-    this._setState({point, offers, selectedOffers, destination});
+    this._setState({
+      point,
+      offers,
+      selectedOffers,
+      destination,
+      isDisabled: false,
+      isSaving: false,
+      isDeleting: false,
+    });
     this._restoreHandlers();
   }
 
