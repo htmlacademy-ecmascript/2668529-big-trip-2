@@ -27,9 +27,17 @@ export default class TripInfoPresenter {
   }
 
   init() {
-    const prev = this.#component;
-
     const points = [...this.#pointsModel.points].sort(sortByDateFrom);
+
+    if (points.length === 0) {
+      if (this.#component !== null) {
+        remove(this.#component);
+        this.#component = null;
+      }
+      return;
+    }
+
+    const prev = this.#component;
 
     this.#component = new TripInfoView({
       routeTitle: this.#calcRouteTitle(points),
