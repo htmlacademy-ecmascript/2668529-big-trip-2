@@ -52,7 +52,12 @@ export default class TripPresenter {
       offersModel: this.#offersModel,
       destinationsModel: this.#destinationsModel,
       onDataChange: this.#handleViewAction,
-      onDestroy: onNewPointDestroy,
+      onDestroy: () => {
+        onNewPointDestroy?.();
+        if (this.tripPoints.length === 0) {
+          this.#renderEmptyList();
+        }
+      },
     });
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
