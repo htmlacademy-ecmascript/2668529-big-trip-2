@@ -227,6 +227,7 @@ export default class TripPresenter {
   #handleModelEvent = (updateType) => {
     switch (updateType) {
       case UpdateType.PATCH:
+        this.#newPointPresenter.destroy();
         this.#clearEventList();
         this.#renderPoints();
         break;

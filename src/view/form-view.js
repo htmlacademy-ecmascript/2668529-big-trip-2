@@ -168,7 +168,7 @@ function createFormTemplate(state, allDestinations = []) {
           <button class="event__save-btn btn btn--blue" type="submit" ${state.isDisabled ? 'disabled' : ''}>
             ${state.isSaving ? 'Saving...' : 'Save'}
           </button>
-          <button class="event__reset-btn" type="reset" ${state.isDisabled ? 'disabled' : ''}>
+          <button class="event__reset-btn" type="reset">
             ${resetButtonText}
           </button>
 
@@ -240,12 +240,8 @@ export default class FormView extends AbstractStatefulView {
   }
 
   _restoreHandlers() {
-    const resetBtn = this.element.querySelector('.event__reset-btn');
-    if (this._state.point.id === null) {
-      resetBtn.addEventListener('click', this.#cancelClickHandler);
-    } else {
-      resetBtn.addEventListener('click', this.#formDeleteClickHandler);
-    }
+
+    this.element.querySelector('.event__reset-btn')?.addEventListener('click', this.#resetClickHandler);
     this.formElement.addEventListener('submit', this.#formSubmitHandler);
     this.rollupButton?.addEventListener('click', this.#rollupClickHandler);
     this.element.querySelector('.event__type-group')?.addEventListener('change', this.#typeChangeHandler);
@@ -266,13 +262,18 @@ export default class FormView extends AbstractStatefulView {
     this.#handleRollupClick();
   };
 
-  #cancelClickHandler = (evt) => {
+  #resetClickHandler = (evt) => {
     evt.preventDefault();
-    this.#handleCancelClick();
-  };
 
-  #formDeleteClickHandler = (evt) => {
-    evt.preventDefault();
+    if (this._state.isDisabled) {
+      return;
+    }
+
+    if (this._state.point.id === null) {
+      this.#handleCancelClick();
+      return;
+    }
+
     this.#handleDeleteClick(this._state.point);
   };
 

@@ -112,7 +112,9 @@ export default class PointPresenter {
           isDeleting: false,
         });
       });
+      return;
     }
+    this.#pointView.shake();
   }
 
   #replacePointToForm() {
