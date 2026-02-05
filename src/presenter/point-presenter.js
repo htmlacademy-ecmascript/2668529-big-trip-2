@@ -32,7 +32,7 @@ export default class PointPresenter {
   init(point) {
     this.#point = point;
 
-    const destination = this.#destinationsModel.getDestinationById(point.destination) || {id: null, name: '', description: '', pictures: []};
+    const destination = this.#destinationsModel.getDestinationById(point.destination);
     const offers = this.#offersModel.getOffersByType(point.type).filter((offer) => point.offers.includes(offer.id));
     const formOffers = this.#offersModel.getOffersByType(point.type) || [];
     const prevPointView = this.#pointView;
@@ -103,7 +103,7 @@ export default class PointPresenter {
     }
   }
 
-  setAborting() {
+  /*setAborting() {
     if (this.#mode === Mode.EDITING) {
       this.#formView.shake(() => {
         this.#formView.updateElement({
@@ -112,7 +112,21 @@ export default class PointPresenter {
           isDeleting: false,
         });
       });
+      return;
     }
+    this.#pointView.shake();
+  }*/
+
+  setAborting() {
+    if (this.#mode === Mode.EDITING) {
+      this.#formView.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    }
+    this.#formView.shake();
+    this.#pointView.shake();
   }
 
   #replacePointToForm() {

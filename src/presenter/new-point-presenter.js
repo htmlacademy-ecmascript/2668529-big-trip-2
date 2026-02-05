@@ -1,13 +1,13 @@
 import {remove, render, RenderPosition} from '../framework/render.js';
 import FormView from '../view/form-view.js';
-import {UserAction, UpdateType, POINTS_TYPE} from '../const.js';
+import {UserAction, UpdateType} from '../const.js';
 
 const BLANK_POINT = {
   id: null,
-  type: POINTS_TYPE[0],
-  destination: '',
-  dateFrom: new Date(),
-  dateTo: new Date(),
+  type: 'flight',
+  destination: null,
+  dateFrom: null,
+  dateTo: null,
   basePrice: 0,
   isFavorite: false,
   offers: []

@@ -31,8 +31,10 @@ export default class TripPresenter {
   #allPointPresenters = new Map();
   #currentSortType = SortType.DAY;
   #filterType = FilterType.EVERYTHING;
+  #loadingCount = 3;
   #isLoading = true;
   #isLoadingError = false;
+  #hasLoadingError = false;
   #uiBlocker = new UiBlocker({
     lowerLimit: TimeLimit.LOWER_LIMIT,
     upperLimit: TimeLimit.UPPER_LIMIT
@@ -51,10 +53,17 @@ export default class TripPresenter {
       offersModel: this.#offersModel,
       destinationsModel: this.#destinationsModel,
       onDataChange: this.#handleViewAction,
-      onDestroy: onNewPointDestroy,
+      onDestroy: () => {
+        onNewPointDestroy?.();
+        if (this.tripPoints.length === 0) {
+          this.#renderEmptyList();
+        }
+      },
     });
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
+    this.#offersModel.addObserver(this.#handleModelEvent);
+    this.#destinationsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
@@ -76,7 +85,7 @@ export default class TripPresenter {
   }
 
   init() {
-    this.#renderApp();
+    this.#renderLoading();
   }
 
   createPoint() {
@@ -140,7 +149,7 @@ export default class TripPresenter {
   }
 
   #renderApp() {
-    this.#renderEventList();
+    this.#clearApp();
 
     if (this.#isLoading) {
       this.#renderLoading();
@@ -151,6 +160,8 @@ export default class TripPresenter {
       this.#renderLoadingError();
       return;
     }
+
+    this.#renderEventList();
 
     if (this.tripPoints.length === 0) {
       this.#renderEmptyList();
@@ -167,11 +178,13 @@ export default class TripPresenter {
   }
 
   #clearApp() {
-    this.#clearEventList();
-    remove(this.#sortComponent);
     remove(this.#loadingComponent);
+    remove(this.#loadingErrorComponent);
     remove(this.#emptyList);
+    remove(this.#sortComponent);
     remove(this.#eventList);
+
+    this.#clearEventList();
   }
 
   #handleSortTypeChange = (newSortType) => {
@@ -188,57 +201,75 @@ export default class TripPresenter {
   #handleViewAction = async (actionType, updateType, update) => {
     this.#uiBlocker.block();
     switch (actionType) {
-      case UserAction.UPDATE_POINT:
-        this.#allPointPresenters.get(update.id).setSaving();
+      case UserAction.UPDATE_POINT: {
+        const presenter = this.#allPointPresenters.get(update.id);
+        presenter?.setSaving();
         try {
           await this.#pointsModel.updatePoint(updateType, update);
-        } catch(err) {
-          this.#allPointPresenters.get(update.id).setAborting();
+        } catch (err) {
+          presenter?.setAborting();
         }
         break;
-      case UserAction.ADD_POINT:
+      }
+      case UserAction.ADD_POINT: {
         this.#newPointPresenter.setSaving();
         try {
           await this.#pointsModel.addPoint(updateType, update);
-        } catch(err) {
+        } catch (err) {
           this.#newPointPresenter.setAborting();
         }
         break;
-      case UserAction.DELETE_POINT:
-        this.#allPointPresenters.get(update.id).setDeleting();
+      }
+      case UserAction.DELETE_POINT: {
+        const presenter = this.#allPointPresenters.get(update.id);
+        presenter?.setDeleting();
         try {
           await this.#pointsModel.deletePoint(updateType, update);
-        } catch(err) {
-          this.#allPointPresenters.get(update.id).setAborting();
+        } catch (err) {
+          presenter?.setAborting();
         }
         break;
+      }
     }
     this.#uiBlocker.unblock();
   };
 
-  #handleModelEvent = (updateType, data) => {
+  #handleModelEvent = (updateType) => {
     switch (updateType) {
-      case UpdateType.PATCH:
-        this.#allPointPresenters.get(data.id).init(data);
-        break;
-      case UpdateType.MINOR:
-        this.#newPointPresenter.destroy();
-        this.#clearApp();
-        this.#renderApp();
-        break;
-      case UpdateType.MAJOR:
-        this.#clearApp();
-        this.#renderApp();
-        break;
+
       case UpdateType.INIT:
-        this.#isLoading = false;
-        remove(this.#loadingComponent);
+        this.#loadingCount--;
+        if (this.#loadingCount === 0) {
+          this.#isLoading = false;
+          this.#isLoadingError = this.#hasLoadingError;
+          this.#renderApp();
+        }
+        break;
+
+      case UpdateType.LOADING_ERROR:
+        this.#hasLoadingError = true;
+        this.#loadingCount--;
+        if (this.#loadingCount === 0) {
+          this.#isLoading = false;
+          this.#isLoadingError = true;
+          this.#renderApp();
+        }
+        break;
+
+
+      case UpdateType.PATCH:
+        this.#clearEventList();
+        this.#renderPoints();
+        break;
+
+
+      case UpdateType.MINOR:
         this.#renderApp();
         break;
-      case UpdateType.LOADING_ERROR:
-        this.#isLoading = false;
-        this.#isLoadingError = true;
-        remove(this.#loadingComponent);
+
+
+      case UpdateType.MAJOR:
+        this.#currentSortType = SortType.DAY;
         this.#renderApp();
         break;
     }
