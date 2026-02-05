@@ -219,10 +219,11 @@ export default class TripPresenter {
     this.#uiBlocker.unblock();
   };
 
-  #handleModelEvent = (updateType, data) => {
+  #handleModelEvent = (updateType) => {
     switch (updateType) {
       case UpdateType.PATCH:
-        this.#allPointPresenters.get(data.id).init(data);
+        this.#clearEventList();
+        this.#renderPoints();
         break;
       case UpdateType.MINOR:
         this.#newPointPresenter.destroy();
