@@ -65,8 +65,6 @@ setTimeout(() => {
   pointsModel.init();
   offersModel.init();
   destinationsModel.init();
-
   tripInfoPresenter.init();
-
   render(newPointButtonComponent, tripMainContainer);
 }, 0);

@@ -61,5 +61,10 @@ const sortByTime = (a, b) => {
 const sortByPrice = (a, b) =>
   b.basePrice - a.basePrice;
 
+const sortByDateFrom = (a, b) => a.dateFrom - b.dateFrom;
+
+const formatHeaderDate = (date) =>
+  date.toLocaleDateString('en-GB', {day: '2-digit', month: 'short'});
+
 export { humanizePointDate, humanizePointTime, humanizeDateTime, getEventDuration,
-  isFuture, isPast, isPresent, sortByDay, sortByTime, sortByPrice};
+  isFuture, isPast, isPresent, sortByDay, sortByTime, sortByPrice, sortByDateFrom, formatHeaderDate };
