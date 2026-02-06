@@ -1,7 +1,7 @@
-import {render, replace, remove, RenderPosition} from '../framework/render.js';
+import { render, replace, remove, RenderPosition } from '../framework/render.js';
 import TripInfoView from '../view/trip-info-view.js';
-import {UpdateType} from '../const.js';
-import {sortByDateFrom, formatHeaderDate} from '../utils/date-time.js';
+import { UpdateType } from '../const.js';
+import { sortByDateFrom, formatHeaderDate } from '../utils/date-time.js';
 
 export default class TripInfoPresenter {
   #pointsModel = null;

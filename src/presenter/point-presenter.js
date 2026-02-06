@@ -103,20 +103,6 @@ export default class PointPresenter {
     }
   }
 
-  /*setAborting() {
-    if (this.#mode === Mode.EDITING) {
-      this.#formView.shake(() => {
-        this.#formView.updateElement({
-          isDisabled: false,
-          isSaving: false,
-          isDeleting: false,
-        });
-      });
-      return;
-    }
-    this.#pointView.shake();
-  }*/
-
   setAborting() {
     if (this.#mode === Mode.EDITING) {
       this.#formView.updateElement({

@@ -1,17 +1,17 @@
-import { render, remove, RenderPosition } from '../framework/render.js';
 import SortView from '../view/sort-view.js';
 import PointListView from '../view/point-list-view.js';
 import EmptyListView from '../view/empty-list-view.js';
-import PointPresenter from '../presenter/point-presenter.js';
-import NewPointPresenter from './new-point-presenter.js';
 import LoadingView from '../view/loading-view.js';
 import LoadingErrorView from '../view/loading-error-view.js';
+import PointPresenter from '../presenter/point-presenter.js';
+import NewPointPresenter from './new-point-presenter.js';
+import { render, remove, RenderPosition } from '../framework/render.js';
 import { SortType, UpdateType, UserAction, FilterType } from '../const.js';
 import { sortByDay, sortByTime, sortByPrice } from '../utils/date-time.js';
 import { filter } from '../utils/filter.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 
-const TimeLimit = {
+const UiBlockerTimeLimit = {
   LOWER_LIMIT: 350,
   UPPER_LIMIT: 1000,
 };
@@ -36,10 +36,9 @@ export default class TripPresenter {
   #isLoadingError = false;
   #hasLoadingError = false;
   #uiBlocker = new UiBlocker({
-    lowerLimit: TimeLimit.LOWER_LIMIT,
-    upperLimit: TimeLimit.UPPER_LIMIT
+    lowerLimit: UiBlockerTimeLimit.LOWER_LIMIT,
+    upperLimit: UiBlockerTimeLimit.UPPER_LIMIT
   });
-
 
   constructor({ tripEventsContainer, pointsModel, offersModel, destinationsModel, filterModel, onNewPointDestroy }) {
     this.#tripEventsContainer = tripEventsContainer;
