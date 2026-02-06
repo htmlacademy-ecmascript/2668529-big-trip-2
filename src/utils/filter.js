@@ -9,9 +9,9 @@ const filter = {
 };
 
 function generateFilterData(points) {
-  return Object.entries(filter).map(([type, filterPoints]) => ({
+  return Object.values(FilterType).map((type) => ({
     type,
-    count: filterPoints(points).length
+    count: filter[type](points).length
   }));
 }
 

@@ -1,22 +1,17 @@
-import {render, replace, remove, RenderPosition} from '../framework/render.js';
+import { render, replace, remove, RenderPosition } from '../framework/render.js';
 import TripInfoView from '../view/trip-info-view.js';
-import {UpdateType} from '../const.js';
-
-const sortByDateFrom = (a, b) => a.dateFrom - b.dateFrom;
-
-const formatHeaderDate = (date) =>
-  date.toLocaleDateString('en-GB', {day: '2-digit', month: 'short'});
+import { UpdateType } from '../const.js';
+import { sortByDateFrom, formatHeaderDate } from '../utils/date-time.js';
 
 export default class TripInfoPresenter {
-  #container = null;
   #pointsModel = null;
   #offersModel = null;
   #destinationsModel = null;
+  #tripInfoContainer = null;
+  #tripInfoComponent = null;
 
-  #component = null;
-
-  constructor({container, pointsModel, offersModel, destinationsModel}) {
-    this.#container = container;
+  constructor({tripInfoContainer, pointsModel, offersModel, destinationsModel}) {
+    this.#tripInfoContainer = tripInfoContainer;
     this.#pointsModel = pointsModel;
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
@@ -30,27 +25,27 @@ export default class TripInfoPresenter {
     const points = [...this.#pointsModel.points].sort(sortByDateFrom);
 
     if (points.length === 0) {
-      if (this.#component !== null) {
-        remove(this.#component);
-        this.#component = null;
+      if (this.#tripInfoComponent !== null) {
+        remove(this.#tripInfoComponent);
+        this.#tripInfoComponent = null;
       }
       return;
     }
 
-    const prev = this.#component;
+    const prev = this.#tripInfoComponent;
 
-    this.#component = new TripInfoView({
+    this.#tripInfoComponent = new TripInfoView({
       routeTitle: this.#calcRouteTitle(points),
       datesText: this.#calcDates(points),
       totalPrice: this.#calcTotalPrice(points),
     });
 
     if (!prev) {
-      render(this.#component, this.#container, RenderPosition.AFTERBEGIN);
+      render(this.#tripInfoComponent, this.#tripInfoContainer, RenderPosition.AFTERBEGIN);
       return;
     }
 
-    replace(this.#component, prev);
+    replace(this.#tripInfoComponent, prev);
     remove(prev);
   }
 
