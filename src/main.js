@@ -31,7 +31,7 @@ const destinationsModel = new DestinationsModel({
 const filterModel = new FilterModel();
 
 const tripInfoPresenter = new TripInfoPresenter({
-  container: tripMainContainer,
+  tripInfoContainer: tripMainContainer,
   pointsModel,
   offersModel,
   destinationsModel
