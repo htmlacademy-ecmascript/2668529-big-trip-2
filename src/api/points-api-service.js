@@ -48,7 +48,6 @@ export default class PointsApiService extends ApiService {
     return response;
   }
 
-
   #adaptToServer(point) {
     const adaptedPoint = {
       type: point.type,
