@@ -84,18 +84,13 @@ export default class TripPresenter {
   }
 
   init() {
-    this.#renderLoading();
+    this.#renderApp();
   }
 
   createPoint() {
     this.#currentSortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#handleModeChange();
-
-    if (this.#loadingErrorComponent) {
-      remove(this.#loadingErrorComponent);
-      this.#isLoadingError = false;
-    }
 
     if (this.#emptyList) {
       remove(this.#emptyList);
@@ -118,6 +113,7 @@ export default class TripPresenter {
   }
 
   #renderLoadingError() {
+    document.querySelector('.trip-main__event-add-btn')?.setAttribute('disabled', 'disabled');
     render(this.#loadingErrorComponent, this.#tripEventsContainer);
   }
 
