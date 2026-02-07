@@ -62,6 +62,9 @@ export default class NewPointPresenter {
   }
 
   setSaving() {
+    if (!this.#formView) {
+      return;
+    }
     this.#formView.updateElement({
       isDisabled: true,
       isSaving: true,
@@ -69,7 +72,13 @@ export default class NewPointPresenter {
   }
 
   setAborting() {
+    if (!this.#formView) {
+      return;
+    }
     this.#formView.shake(() => {
+      if (!this.#formView) {
+        return;
+      }
       this.#formView.updateElement({
         isDisabled: false,
         isSaving: false,

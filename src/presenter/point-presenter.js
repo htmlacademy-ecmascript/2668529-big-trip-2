@@ -104,6 +104,9 @@ export default class PointPresenter {
   }
 
   setAborting() {
+    if (!this.#formView || !this.#pointView) {
+      return;
+    }
     if (this.#mode === Mode.EDITING) {
       this.#formView.updateElement({
         isDisabled: false,
@@ -129,7 +132,10 @@ export default class PointPresenter {
     this.#formView.updateElement({
       point: this.#point,
       selectedOffers: this.#point.offers,
-      destination: this.#destinationsModel.getDestinationById(this.#point.destination)
+      destination: this.#destinationsModel.getDestinationById(this.#point.destination),
+      isDisabled: false,
+      isSaving: false,
+      isDeleting: false,
     });
     replace(this.#pointView, this.#formView);
     document.removeEventListener('keydown', this.#handleFormEscKeyDown);
