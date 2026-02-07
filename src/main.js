@@ -49,6 +49,9 @@ const filterPresenter = new FilterPresenter({
 const newPointButtonComponent = new NewPointButtonView({ onClick: handleNewPointButtonClick });
 
 function handleNewPointFormClose() {
+  if (document.querySelector('.trip-events__msg')?.textContent.includes('Failed to load')) {
+    return;
+  }
   newPointButtonComponent.element.disabled = false;
 }
 
