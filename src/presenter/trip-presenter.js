@@ -266,6 +266,13 @@ export default class TripPresenter {
 
       case UpdateType.MAJOR:
         this.#currentSortType = SortType.DAY;
+        if (this.#newPointPresenter.isActive) {
+          this.#clearEventList();
+          remove(this.#sortComponent);
+          this.#renderSort();
+          this.#renderPoints();
+          return;
+        }
         this.#renderApp();
         break;
     }

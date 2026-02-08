@@ -31,6 +31,10 @@ export default class NewPointPresenter {
     this.#destinationsModel = destinationsModel;
   }
 
+  get isActive() {
+    return this.#formView !== null;
+  }
+
   init() {
     if (this.#formView !== null) {
       return;
