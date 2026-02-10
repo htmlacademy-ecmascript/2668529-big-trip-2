@@ -1,6 +1,6 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { humanizeDateTime } from '../utils/date-time.js';
-import { POINTS_TYPE } from '../const.js';
+import { POINT_TYPES } from '../const.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import he from 'he';
@@ -114,7 +114,7 @@ function createFormTemplate(state, allDestinations = []) {
             <div class="event__type-list">
               <fieldset class="event__type-group">
                 <legend class="visually-hidden">Event type</legend>
-                ${POINTS_TYPE.map((t) => createTypeTemplate(t, type, id)).join('')}
+                ${POINT_TYPES.map((t) => createTypeTemplate(t, type, id)).join('')}
               </fieldset>
             </div>
           </div>
@@ -240,7 +240,6 @@ export default class FormView extends AbstractStatefulView {
   }
 
   _restoreHandlers() {
-
     this.element.querySelector('.event__reset-btn')?.addEventListener('click', this.#resetClickHandler);
     this.formElement.addEventListener('submit', this.#formSubmitHandler);
     this.rollupButton?.addEventListener('click', this.#rollupClickHandler);

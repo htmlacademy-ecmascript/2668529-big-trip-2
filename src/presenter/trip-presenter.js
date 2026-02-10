@@ -11,7 +11,7 @@ import { sortByDay, sortByTime, sortByPrice } from '../utils/date-time.js';
 import { filter } from '../utils/filter.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 
-const UiBlockerTimeLimit = {
+const UI_BLOCKER_TIME_LIMIT = {
   LOWER_LIMIT: 350,
   UPPER_LIMIT: 1000,
 };
@@ -36,8 +36,8 @@ export default class TripPresenter {
   #isLoadingError = false;
   #hasLoadingError = false;
   #uiBlocker = new UiBlocker({
-    lowerLimit: UiBlockerTimeLimit.LOWER_LIMIT,
-    upperLimit: UiBlockerTimeLimit.UPPER_LIMIT
+    lowerLimit: UI_BLOCKER_TIME_LIMIT.LOWER_LIMIT,
+    upperLimit: UI_BLOCKER_TIME_LIMIT.UPPER_LIMIT
   });
 
   constructor({ tripEventsContainer, pointsModel, offersModel, destinationsModel, filterModel, onNewPointDestroy }) {
