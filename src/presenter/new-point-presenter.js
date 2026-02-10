@@ -2,16 +2,18 @@ import { remove, render, RenderPosition } from '../framework/render.js';
 import FormView from '../view/form-view.js';
 import { UserAction, UpdateType } from '../const.js';
 
-const BLANK_POINT = {
-  id: null,
-  type: 'flight',
-  destination: null,
-  dateFrom: null,
-  dateTo: null,
-  basePrice: 0,
-  isFavorite: false,
-  offers: []
-};
+function createBlankPoint() {
+  return {
+    id: null,
+    type: 'flight',
+    destination: null,
+    dateFrom: null,
+    dateTo: null,
+    basePrice: 0,
+    isFavorite: false,
+    offers: []
+  };
+}
 
 export default class NewPointPresenter {
   #eventList = null;
@@ -40,9 +42,11 @@ export default class NewPointPresenter {
       return;
     }
 
+    const point = createBlankPoint();
+
     this.#formView = new FormView({
-      point: BLANK_POINT,
-      offers: this.#offersModel.getOffersByType(BLANK_POINT.type),
+      point,
+      offers: this.#offersModel.getOffersByType(point.type),
       selectedOffers: [],
       destination: null,
       offersModel: this.#offersModel,

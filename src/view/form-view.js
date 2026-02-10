@@ -195,7 +195,8 @@ export default class FormView extends AbstractStatefulView {
   #datepickerEnd = null;
   #handleCancelClick = null;
 
-  constructor({ point, offers, selectedOffers, destination, onSubmit, onRollupClick, onDeleteClick, onCancelClick, offersModel, destinationsModel }) {
+  constructor({ point, offers, selectedOffers, destination, onSubmit, onRollupClick,
+    onDeleteClick, onCancelClick, offersModel, destinationsModel }) {
     super();
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
@@ -263,16 +264,13 @@ export default class FormView extends AbstractStatefulView {
 
   #resetClickHandler = (evt) => {
     evt.preventDefault();
-
     if (this._state.isDisabled) {
       return;
     }
-
     if (this._state.point.id === null) {
       this.#handleCancelClick();
       return;
     }
-
     this.#handleDeleteClick(this._state.point);
   };
 
